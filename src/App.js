@@ -1,28 +1,52 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { 
+  Loading, SignIn, SignInWithPhone,
+  Profile, Register, UpdateProfile
+} from './components';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+    constructor(props){
+        super(props);
+        this.state = {
+            route: "SIGN_IN"
+        }
+        this.changeRoute    = this.changeRoute.bind(this);
+        this._renderPage    = this._renderPage.bind(this);
+    }
+
+    changeRoute(route){
+        this.setState({route});
+        return false;
+    }
+
+    _renderPage(){
+        switch(this.state.route){
+            case "UPDATE_PROFILE":
+                return <UpdateProfile changeRoute={this.changeRoute} />
+            case "REGISTER":
+                return <Register changeRoute={this.changeRoute} />
+            case "SIGN_IN_PHONE":
+                return <SignInWithPhone changeRoute={this.changeRoute} />
+            case "PROFILE":
+                return <Profile changeRoute={this.changeRoute} />
+            case "SIGN_IN":
+                return <SignIn changeRoute={this.changeRoute} />
+        }
+    }
+
+    render() {
+        if(!this.state.hasOwnProperty("user")){
+            return(
+                <Loading />
+            )
+        }
+        return (
+            <div className="container">
+                {this._renderPage()}
+            </div>
+        );
+    }
 }
 
 export default App;

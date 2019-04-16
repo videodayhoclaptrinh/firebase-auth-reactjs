@@ -1,0 +1,14 @@
+.fb-loading{
+    padding-top: 300px;
+}
+.fb-loading > div{
+    width: 8rem;
+    height: 8rem;
+}
+.fb-login{
+    margin: 100px auto;
+}
+.fb-btn-login{
+    margin-bottom:10px;
+    margin-right: 10px;
+}
