@@ -26,10 +26,41 @@ class App extends Component {
         this.signIn         = this.signIn.bind(this);
         this.signOut        = this.signOut.bind(this);
         this.changeProfile  = this.changeProfile.bind(this);
+        this.onSigninGoogle = this.onSigninGoogle.bind(this);
+        this.onSigninGooglePopup = this.onSigninGooglePopup.bind(this);
     }
 
     componentDidMount(){
         this.authListener();
+    }
+
+    onSigninGoogle(){
+        firebase.auth().getRedirectResult().then((result)=> {
+            if (result.credential) {
+                // This gives you a Google Access Token.
+                var token = result.credential.accessToken;
+            }
+            var user = result.user;
+            this.setState({ user, token });
+        });
+    
+        var provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
+        firebase.auth().signInWithRedirect(provider);
+    }
+
+    onSigninGooglePopup(){
+        var provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
+        firebase.auth().signInWithPopup(provider).then((result)=> {
+            // This gives you a Google Access Token.
+            var token = result.credential.accessToken;
+            // The signed-in user info.
+            var user = result.user;
+            this.setState({ user, token });
+        });
     }
 
     signOut(e){
@@ -46,7 +77,7 @@ class App extends Component {
                 firebase.auth().signOut().then(()=>{
                     this.setState({ route: "SIGN_IN" });
                 }).catch(function(error) {
-                    // An error happened.
+                //     // An error happened.
                 });
             }
         });
@@ -103,7 +134,7 @@ class App extends Component {
             case "PROFILE":
                 return <Profile changeRoute={this.changeRoute} signOut={this.signOut} user={this.state.user} />
             case "SIGN_IN":
-                return <SignIn changeRoute={this.changeRoute} signIn={this.signIn}/>
+                return <SignIn onSigninGooglePopup={this.onSigninGooglePopup} changeRoute={this.changeRoute} signIn={this.signIn} onSigninGoogle={this.onSigninGoogle}/>
         }
     }
 

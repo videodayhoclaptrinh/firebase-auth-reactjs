@@ -23,8 +23,8 @@ class SignIn extends Component{
                 <span onClick={this.props.signIn.bind(this,this.state.email, this.state.password)} className="btn btn-sm btn-primary fb-btn-login">Login</span>
                 <span onClick={this.props.changeRoute.bind(this,"SIGN_IN_PHONE")}className="btn btn-sm btn-success fb-btn-login">Login with Phone</span><br/>
 
-                <span onClick={this.props.changeRoute.bind(this,"PROFILE")} className="btn btn-sm btn-danger fb-btn-login">Login with Google</span>
-                <span onClick={this.props.changeRoute.bind(this,"PROFILE")} className="btn btn-sm btn-info fb-btn-login">Login with Google Popup</span><br/>
+                <span onClick={this.props.onSigninGoogle.bind(this)} className="btn btn-sm btn-danger fb-btn-login">Login with Google</span>
+                <span onClick={this.props.onSigninGooglePopup.bind(this)} className="btn btn-sm btn-info fb-btn-login">Login with Google Popup</span><br/>
 
                 <a onClick={this.props.changeRoute.bind(this,"REGISTER")} className="text text-danger fb-btn-login">Register</a>  
                 <a onClick={this.props.changeRoute.bind(this,"FORGET_PASS")} className="text text-success fb-btn-login">Forget password</a>
