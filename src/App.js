@@ -19,7 +19,8 @@ class App extends Component {
     constructor(props){
         super(props);
         this.state = {
-            route: "SIGN_IN"
+            route: "SIGN_IN",
+            verificationId: null
         }
         this.changeRoute    = this.changeRoute.bind(this);
         this._renderPage    = this._renderPage.bind(this);
@@ -27,6 +28,8 @@ class App extends Component {
         this.signOut        = this.signOut.bind(this);
         this.changeProfile  = this.changeProfile.bind(this);
         this.onSigninGoogle = this.onSigninGoogle.bind(this);
+        this.submitCode     = this.submitCode.bind(this);
+        this.sendCodetoMsg  = this.sendCodetoMsg.bind(this);
         this.onSigninGooglePopup = this.onSigninGooglePopup.bind(this);
     }
 
@@ -75,7 +78,7 @@ class App extends Component {
         .then((willDelete) => {
             if (willDelete) {
                 firebase.auth().signOut().then(()=>{
-                    this.setState({ route: "SIGN_IN" });
+                    this.setState({ route: "SIGN_IN", user: null, verificationId: null });
                 }).catch(function(error) {
                 //     // An error happened.
                 });
@@ -123,6 +126,25 @@ class App extends Component {
         return false;
     }
 
+    submitCode(verificationCode){
+        let phoneCredential = firebase.auth.PhoneAuthProvider.credential(this.state.verificationId,verificationCode)
+        firebase.auth().signInWithCredential(phoneCredential)
+        .then((rs)=>{
+        })
+        .catch(err=>{
+            swal(err.message);
+        })
+    }
+    
+    sendCodetoMsg(phoneNumber){
+        var applicationVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+        var provider = new firebase.auth.PhoneAuthProvider();
+        provider.verifyPhoneNumber(phoneNumber, applicationVerifier)
+        .then((verificationId)=>{
+            this.setState({verificationId});
+        });
+    }
+
     _renderPage(){
         switch(this.state.route){
             case "UPDATE_PROFILE":
@@ -130,7 +152,7 @@ class App extends Component {
             case "REGISTER":
                 return <Register changeRoute={this.changeRoute} />
             case "SIGN_IN_PHONE":
-                return <SignInWithPhone changeRoute={this.changeRoute} />
+                return <SignInWithPhone sendCodetoMsg={this.sendCodetoMsg} submitCode={this.submitCode} verificationId={this.state.verificationId} changeRoute={this.changeRoute} />
             case "PROFILE":
                 return <Profile changeRoute={this.changeRoute} signOut={this.signOut} user={this.state.user} />
             case "SIGN_IN":
