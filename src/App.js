@@ -1,11 +1,19 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component }             from 'react';
 import { 
   Loading, SignIn, SignInWithPhone,
   Profile, Register, UpdateProfile
-} from './components';
-import fire from './utils/fire';
-import swal from 'sweetalert';
+}                                       from './components';
+import * as firebase                    from 'firebase';
+import swal                             from 'sweetalert';
+var config = {
+    apiKey: "AIzaSyA__Jp53VZctpONM0ft2qxQ_fNfXefMhI8",
+    authDomain: "dayhoclaptrinh-123.firebaseapp.com",
+    databaseURL: "https://dayhoclaptrinh-123.firebaseio.com",
+    projectId: "dayhoclaptrinh-123",
+    storageBucket: "dayhoclaptrinh-123.appspot.com",
+    messagingSenderId: "994539545049"
+};
+firebase.initializeApp(config);
 
 class App extends Component {
     constructor(props){
@@ -35,7 +43,7 @@ class App extends Component {
         })
         .then((willDelete) => {
             if (willDelete) {
-                fire.auth().signOut().then(()=>{
+                firebase.auth().signOut().then(()=>{
                     this.setState({ route: "SIGN_IN" });
                 }).catch(function(error) {
                     // An error happened.
@@ -46,7 +54,7 @@ class App extends Component {
 
     signIn(email, password, e){
         e.preventDefault();
-        fire.auth().signInWithEmailAndPassword(email, password)
+        firebase.auth().signInWithEmailAndPassword(email, password)
         .then((u)=>{
         })
         .catch((error) => {
@@ -56,21 +64,21 @@ class App extends Component {
 
     changeProfile(displayName, photoURL, e){
         e.preventDefault();
-        var user = fire.auth().currentUser;
+        var user = firebase.auth().currentUser;
     
         user.updateProfile({
             displayName,
             photoURL
-        }).then(function() {
+        }).then(()=> {
             swal("Update success!");
             this.setState({ route: "PROFILE" });
-        }).catch(function(error) {
+        }).catch((error)=> {
           // An error happened.
         });
     }
 
     authListener() {
-        fire.auth().onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.setState({ user, route: "PROFILE"});
             } else {
