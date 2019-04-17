@@ -26,6 +26,7 @@ class App extends Component {
         this._renderPage    = this._renderPage.bind(this);
         this.signIn         = this.signIn.bind(this);
         this.signOut        = this.signOut.bind(this);
+        this.signUp         = this.signUp.bind(this);
         this.changeProfile  = this.changeProfile.bind(this);
         this.onSigninGoogle = this.onSigninGoogle.bind(this);
         this.submitCode     = this.submitCode.bind(this);
@@ -35,6 +36,22 @@ class App extends Component {
 
     componentDidMount(){
         this.authListener();
+    }
+
+    signUp(email,password,repassword,e){
+        e.preventDefault();
+        if(password !== repassword){
+            swal("Password confirm not correct!");
+            return;
+        }
+        firebase.auth().createUserWithEmailAndPassword(email, password).then((u)=>{
+        })
+        .then((u)=>{
+            console.log(u)
+        })
+        .catch((error) => {
+            alert(error.message);
+        })
     }
 
     onSigninGoogle(){
@@ -150,7 +167,7 @@ class App extends Component {
             case "UPDATE_PROFILE":
                 return <UpdateProfile changeRoute={this.changeRoute} changeProfile={this.changeProfile}  user={this.state.user} />
             case "REGISTER":
-                return <Register changeRoute={this.changeRoute} />
+                return <Register signUp={this.signUp} changeRoute={this.changeRoute} />
             case "SIGN_IN_PHONE":
                 return <SignInWithPhone sendCodetoMsg={this.sendCodetoMsg} submitCode={this.submitCode} verificationId={this.state.verificationId} changeRoute={this.changeRoute} />
             case "PROFILE":
